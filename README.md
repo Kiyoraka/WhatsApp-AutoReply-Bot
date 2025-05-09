@@ -114,12 +114,6 @@ You can customize colors by modifying the CSS variables in `styles.css`:
 }
 ```
 
-## 📱 Mobile Support
-
-The interface is fully responsive and works on:
-- Desktop browsers
-- Tablets
-- Mobile phones
 
 ## 📄 License
 
