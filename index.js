@@ -37,7 +37,7 @@ let keywordResponses = [
 ];
 
 // Welcome message for new users
-let welcomeMessage = "Selamat datang ke Portal Rasmi Kerajaan Negeri Perak! Saya adalah bot bantuan automatik. Bagaimana saya boleh membantu anda hari ini?";
+let welcomeMessage = "Selamat datang ke Whatsapp Auto Reply";
 
 // Track users who have already been greeted
 let greetedUsers = new Set();
