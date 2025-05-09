@@ -2,7 +2,7 @@
 
 A Node.js application that provides automatic responses to WhatsApp messages based on keywords. Features a web interface for configuration, auto-greeting messages, and light/dark mode.
 
-![WhatsApp Auto-Reply Bot](https://your-screenshot-url-here.png)
+![WhatsApp Auto-Reply Bot](screenshot.png)
 
 ## ✨ Features
 
