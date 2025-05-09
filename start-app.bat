@@ -40,10 +40,18 @@ echo Starting WhatsApp Auto-Responder...
 echo (Press Ctrl+C to stop the application)
 echo.
 
-REM Run the Node.js application
-node index.js
+REM Start the Node.js application in the background
+start /B cmd /c "node index.js"
 
-REM If we get here, the application has stopped
+REM Wait a few seconds for the server to initialize
+echo Waiting for server to start...
+timeout /t 5 /nobreak > nul
+
+REM Open the browser to the application URL
+echo Opening browser to http://localhost:8000/
+start http://localhost:8000/
+
 echo.
-echo Application stopped.
+echo Application is running in the background.
+echo To stop the application, close the Node.js command window.
 pause

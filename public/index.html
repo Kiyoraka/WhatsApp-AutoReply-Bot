@@ -1,105 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WhatsApp Auto-Reply Bot</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      line-height: 1.6;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .qr-container {
-      text-align: center;
-      margin: 20px 0;
-    }
-    .qr-image {
-      max-width: 300px;
-      margin: 0 auto;
-    }
-    .status {
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-    }
-    .connected {
-      background-color: #d4edda;
-      color: #155724;
-    }
-    .disconnected {
-      background-color: #f8d7da;
-      color: #721c24;
-    }
-    .waiting {
-      background-color: #fff3cd;
-      color: #856404;
-    }
-    .greeting-container, .keyword-container {
-      margin: 20px 0;
-      padding: 15px;
-      border: 1px solid #dee2e6;
-      border-radius: 5px;
-      background-color: #f8f9fa;
-    }
-    .keyword-item {
-      display: flex;
-      margin-bottom: 10px;
-    }
-    .keyword-item input {
-      flex: 1;
-      padding: 8px;
-      margin-right: 10px;
-    }
-    .logs {
-      height: 200px;
-      overflow-y: auto;
-      background-color: #f8f9fa;
-      padding: 10px;
-      border: 1px solid #dee2e6;
-      border-radius: 5px;
-      margin-top: 20px;
-    }
-    .log-entry {
-      margin-bottom: 5px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 5px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0069d9;
-    }
-    .add-keyword-btn {
-      margin-top: 10px;
-    }
-    textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-      min-height: 80px;
-    }
-    h2 {
-      margin-top: 0;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
 </head>
 <body>
   <div class="container">
-    <h1>WhatsApp Auto-Reply Bot</h1>
+    <header>
+      <h1>WhatsApp Auto-Reply Bot</h1>
+      <div class="theme-switch-wrapper">
+        <span class="theme-icon"><i class="fas fa-sun"></i></span>
+        <label class="theme-switch">
+          <input type="checkbox" id="theme-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </header>
     
     <div class="status waiting" id="status">
       Waiting to connect to WhatsApp...
@@ -110,18 +30,18 @@
       <div class="qr-image" id="qr-image"></div>
     </div>
     
-    <div class="greeting-container">
+    <div class="card greeting-container">
       <h2>Auto-Greeting Message</h2>
       <p>Configure the message sent automatically when a user starts a new chat:</p>
       
       <div class="greeting-setting">
         <textarea id="welcome-message" rows="4">Selamat datang ke Whatsapp Auto Reply</textarea>
         <button id="save-greeting">Save Greeting</button>
-        <div id="greeting-status" style="margin-top: 10px;"></div>
+        <div id="greeting-status" class="status-message"></div>
       </div>
     </div>
     
-    <div class="keyword-container">
+    <div class="card keyword-container">
       <h2>Keyword Responses</h2>
       <p>Set up keywords and the automatic responses for them:</p>
       
@@ -129,8 +49,10 @@
         <!-- Keyword response pairs will be added here -->
       </div>
       
-      <button class="add-keyword-btn" id="add-keyword">Add Keyword Response</button>
-      <button id="save-keywords">Save Changes</button>
+      <div class="button-group">
+        <button class="add-keyword-btn" id="add-keyword">+ Add Keyword Response</button>
+        <button id="save-keywords">Save Changes</button>
+      </div>
     </div>
     
     <div class="logs">
@@ -141,6 +63,34 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    // Theme switching functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.querySelector('.theme-icon i');
+    
+    // Check for saved theme preference or use device preference
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const savedTheme = localStorage.getItem('theme');
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeToggle.checked = true;
+      themeIcon.classList.replace('fa-sun', 'fa-moon');
+    }
+    
+    // Handle theme toggle change
+    themeToggle.addEventListener('change', function() {
+      if (this.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeIcon.classList.replace('fa-sun', 'fa-moon');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+      }
+    });
+    
+    // Socket connection
     const socket = io();
     console.log('Attempting to connect to socket...');
 
@@ -233,7 +183,7 @@
         keywordItem.innerHTML = `
           <input type="text" placeholder="Keywords (comma separated)" value="${item.keywords}" data-index="${index}" data-type="keywords">
           <input type="text" placeholder="Response" value="${item.response}" data-index="${index}" data-type="response">
-          <button class="remove-btn" data-index="${index}">Remove</button>
+          <button class="remove-btn" data-index="${index}"><i class="fas fa-trash"></i></button>
         `;
         keywordResponses.appendChild(keywordItem);
       });
@@ -241,7 +191,7 @@
       // Add event listeners for remove buttons
       document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-          const index = parseInt(e.target.getAttribute('data-index'));
+          const index = parseInt(e.target.closest('.remove-btn').getAttribute('data-index'));
           keywordResponsesData.splice(index, 1);
           renderKeywordResponses();
         });
@@ -285,12 +235,15 @@
       .then(data => {
         if (data.success) {
           addLogEntry('Keyword responses saved successfully');
+          showStatusMessage('Keyword responses saved successfully', true);
         } else {
           addLogEntry('Failed to save keyword responses');
+          showStatusMessage('Failed to save keyword responses', false);
         }
       })
       .catch(error => {
         addLogEntry('Error saving keyword responses: ' + error.message);
+        showStatusMessage('Error: ' + error.message, false);
       });
     }
     
@@ -312,18 +265,32 @@
         .then(data => {
           if (data.success) {
             greetingStatus.textContent = 'Greeting message saved successfully';
-            greetingStatus.style.color = '#155724';
+            greetingStatus.className = 'status-message success-message';
             addLogEntry('Greeting message updated');
           } else {
             greetingStatus.textContent = 'Failed to save greeting message';
-            greetingStatus.style.color = '#721c24';
+            greetingStatus.className = 'status-message error-message';
           }
         })
         .catch(error => {
           greetingStatus.textContent = 'Error: ' + error.message;
-          greetingStatus.style.color = '#721c24';
+          greetingStatus.className = 'status-message error-message';
         });
       }
+    }
+    
+    function showStatusMessage(message, isSuccess) {
+      const statusMessage = document.createElement('div');
+      statusMessage.className = isSuccess ? 'status-message success-message' : 'status-message error-message';
+      statusMessage.textContent = message;
+      
+      // Insert after save button
+      saveKeywordsBtn.insertAdjacentElement('afterend', statusMessage);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        statusMessage.remove();
+      }, 3000);
     }
     
     function addLogEntry(message) {

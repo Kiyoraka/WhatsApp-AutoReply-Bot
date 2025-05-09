@@ -3,3 +3,10 @@
 # List of ignore files 
 *.exe 
 *.txt 
+node_modules/
+.wwebjs_auth/
+.wwebjs_cache/
+package-lock.json
+yarn.lock
+.env
+whatsapp-session
