@@ -39,10 +39,7 @@ whatsapp-autoresponder/
     ├── index.html           # Main interface
     ├── styles.css           # Styling with theme support
     └── (socket.io.js)       # Auto-served by socket.io
-│
-└── whatsapp-session/        # Session data (auto-generated)
-    └── ...                  # Authentication data
-```
+
 
 ## 🚀 Setup and Installation
 
